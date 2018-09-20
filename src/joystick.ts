@@ -9,12 +9,14 @@ export class Joystick {
 	public rect_zone: Rect;
 	public div_controller: HTMLDivElement;
 	public rect_controller: Rect;
+	public next_circle: Circle;
 
 	constructor(zonePos: Point, zoneRadius: number, controllerPos: Point, controllerRadius: number) {
 		this.zone = new JoystickCircle(zonePos, zoneRadius, "rgba(18, 65, 145, 0.5)");
 		this.controller = new JoystickCircle(controllerPos, controllerRadius, "rgba(18, 65, 145, 0.8)");
 		this.rect_zone = new Rect();
 		this.rect_controller = new Rect();
+		this.next_circle = new Circle();
 		this.createDivs();
 	}
 
@@ -52,19 +54,21 @@ export class Joystick {
 	}
 
 	public move(x: number, y: number): void {
-		const next_circle = new Circle(new Point(x, y), this.controller.circle.radius);
-		if (this.zone.circle.containsPoint(next_circle.pos)) {
-			const angle = this.zone.circle.pos.angle(next_circle.pos) + (Math.PI / 2);
-			next_circle.pos = next_circle.pos.translateFromPoint(angle, this.zone.circle.radius, this.zone.circle.pos);
+		this.next_circle.pos.x = x;
+		this.next_circle.pos.y = y;
+		this.next_circle.radius = this.controller.circle.radius;
+		if (this.zone.circle.containsPoint(this.next_circle.pos)) {
+			const angle = this.zone.circle.pos.angle(this.next_circle.pos) + (Math.PI / 2);
+			this.next_circle.pos = this.next_circle.pos.translateFromPoint(angle, this.zone.circle.radius, this.zone.circle.pos);
 		}
 
-		this.coeff_x = (this.zone.circle.pos.x - next_circle.pos.x) * (-1) / this.zone.circle.radius;
+		this.coeff_x = (this.zone.circle.pos.x - this.next_circle.pos.x) * (-1) / this.zone.circle.radius;
 		this.coeff_x = Math.round(this.coeff_x * 100) / 100;
-		this.coeff_y = (this.zone.circle.pos.y - next_circle.pos.y) / this.zone.circle.radius;
+		this.coeff_y = (this.zone.circle.pos.y - this.next_circle.pos.y) / this.zone.circle.radius;
 		this.coeff_y = Math.round(this.coeff_y * 100) / 100;
 
-		this.div_controller.style.left = (next_circle.pos.x - this.controller.circle.radius) + "px";
-		this.div_controller.style.top = (next_circle.pos.y - this.controller.circle.radius) + "px";
+		this.div_controller.style.left = (this.next_circle.pos.x - this.controller.circle.radius) + "px";
+		this.div_controller.style.top = (this.next_circle.pos.y - this.controller.circle.radius) + "px";
 	}
 }
 
@@ -80,9 +84,9 @@ class JoystickCircle {
 export class Circle {
 	public pos: Point;
 	public radius: number;
-	constructor(pos: Point, radius: number) {
-		this.pos = new Point(pos.x, pos.y);
-		this.radius = radius;
+	constructor(pos?: Point, radius?: number) {
+		this.pos = pos == null ? new Point() : new Point(pos.x, pos.y);
+		this.radius = radius == null ? 0 : radius;
 	}
 
 	public inside(circle: Circle): boolean {
