@@ -1,4 +1,4 @@
 # joyjs
 
-Mouse: http://sebferrer.fr/joyjs/mouse
-Touch: http://sebferrer.fr/joyjs/touch
+<p>Mouse: http://sebferrer.fr/joyjs/mouse</p>
+<p>Touch: http://sebferrer.fr/joyjs/touch</p>
