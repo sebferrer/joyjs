@@ -1,4 +1,6 @@
 import { Point } from "./point";
+import { Circle } from "./circle";
+import { Rect } from "./rect";
 
 export class Joystick {
 	public zone: JoystickCircle;
@@ -31,23 +33,8 @@ export class Joystick {
 		this.rect_controller.width = this.controller.circle.radius * 2;
 		this.rect_controller.height = this.controller.circle.radius * 2;
 
-		this.div_zone = document.createElement("div");
-		this.div_zone.style.width = this.rect_zone.width + "px";
-		this.div_zone.style.height = this.rect_zone.height + "px";
-		this.div_zone.style.position = "absolute";
-		this.div_zone.style.left = this.rect_zone.x + "px";
-		this.div_zone.style.top = this.rect_zone.y + "px";
-		this.div_zone.style.backgroundColor = this.zone.color;
-		this.div_zone.style.borderRadius = "20em";
-
-		this.div_controller = document.createElement("div");
-		this.div_controller.style.width = this.rect_controller.width + "px";
-		this.div_controller.style.height = this.rect_controller.height + "px";
-		this.div_controller.style.position = "absolute";
-		this.div_controller.style.left = this.rect_controller.x + "px";
-		this.div_controller.style.top = this.rect_controller.y + "px";
-		this.div_controller.style.backgroundColor = this.controller.color;
-		this.div_controller.style.borderRadius = "20em";
+		this.div_zone = this.zone.createDiv(this.rect_zone, this.zone.color);
+		this.div_controller = this.zone.createDiv(this.rect_controller, this.controller.color);
 
 		document.body.appendChild(this.div_zone);
 		document.body.appendChild(this.div_controller);
@@ -79,34 +66,19 @@ class JoystickCircle {
 		this.circle = new Circle(pos, radius);
 		this.color = color;
 	}
-}
 
-export class Circle {
-	public pos: Point;
-	public radius: number;
-	constructor(pos?: Point, radius?: number) {
-		this.pos = pos == null ? new Point() : new Point(pos.x, pos.y);
-		this.radius = radius == null ? 0 : radius;
-	}
-
-	public inside(circle: Circle): boolean {
-		return circle.radius > this.pos.distanceBetween(circle.pos) + this.radius;
-	}
-
-	public containsPoint(p: Point): boolean {
-		return this.radius < this.pos.distanceBetween(p);
-	}
-}
-
-class Rect {
-	public x: number;
-	public y: number;
-	public width: number;
-	public height: number;
-	constructor(x?: number, y?: number, width?: number, height?: number) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public createDiv(rect: Rect, color: string) {
+		let div = document.createElement("div");
+		div.style.width = rect.width + "px";
+		div.style.height = rect.height + "px";
+		div.style.position = "absolute";
+		div.style.left = rect.x + "px";
+		div.style.top = rect.y + "px";
+		div.style.backgroundColor = color;
+		div.style.borderRadius = "20em";
+		if(!div.classList.contains("no-pointer-events")) {
+			div.classList.add("no-pointer-events");
+		}
+		return div;
 	}
 }
