@@ -1,6 +1,7 @@
 import { Point } from "./point";
 import { Circle } from "./circle";
 import { Rect } from "./rect";
+import { event_manager } from "./main";
 
 export class Joystick {
 	public id: string;
@@ -16,6 +17,7 @@ export class Joystick {
 	public next_circle: Circle;
 	public force: Point;
 	public touch_identifier: number;
+	public div_log: HTMLDivElement;
 
 	constructor(id: string, zonePos: Point, zoneRadius: number, controllerPos: Point, controllerRadius: number, touch_identifier: number) {
 		this.id = id;
@@ -29,6 +31,9 @@ export class Joystick {
 								(this.rect_zone.y+(this.rect_zone.y+this.rect_zone.height))/2);
 		this.force = new Point();
 		this.touch_identifier = touch_identifier;
+		if(event_manager.log) {
+			this.createLogDiv();
+		}
 	}
 
 	public createDivs() {
@@ -67,6 +72,13 @@ export class Joystick {
 
 		this.div_controller.style.left = (this.next_circle.pos.x - this.controller.circle.radius) + "px";
 		this.div_controller.style.top = (this.next_circle.pos.y - this.controller.circle.radius) + "px";
+	}
+
+	public createLogDiv() {
+		this.div_log = document.createElement("div");
+		this.div_log.style.width = "10em";
+		this.div_log.style.padding = "1em";
+		document.body.appendChild(this.div_log);
 	}
 }
 

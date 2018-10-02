@@ -10,11 +10,13 @@ export class EventManager {
 	public touches: TouchList;
 	public mouse_pos: Point;
 	public event_type: EventType;
+	public log: boolean;
 
-	constructor(event_type: EventType) {
+	constructor(event_type: EventType, log: boolean) {
 		this.joysticks = new Array<Joystick>();
 		this.mouse_pos = new Point();
 		this.event_type = event_type;
+		this.log = log;
 /*
 		document.onmousedown = event => this.mouse_down(event.offsetX, event.offsetY);
 		document.onmouseup = event => this.mouse_up();
@@ -23,6 +25,8 @@ export class EventManager {
 		document.ontouchstart = event => this.touch_start(event.touches);
 		document.ontouchend = event => this.touch_end(event.touches);
 		document.ontouchmove = event => { this.touches = event.touches; };
+
+		document.getElementById("log-check").onchange = event => { this.change_log(); };
 	}
 
 	public touch_start(touches): void {
@@ -63,6 +67,9 @@ export class EventManager {
 			joystick.div_zone.remove();
 			joystick.div_controller.remove();
 			ArrayUtil.remove_from_array(this.joysticks, joystick);
+			if(this.log) {
+				joystick.div_log.remove();
+			}
 		});
 	}
 
@@ -110,7 +117,21 @@ export class EventManager {
 				break;
 		}
 
+		if(this.log) {
+			if (this.joysticks.length > 0) {
+				for(let i = 0; i < this.joysticks.length; i++) {
+					this.joysticks[i].div_log.innerHTML =	"Joystick "+(i+1)+":"+
+															"<br/>x: "+this.joysticks[i].coeff_x+
+															"<br/>y: "+this.joysticks[i].coeff_y;
+				}
+			}
+		}
+
 		const self = this;
 		window.requestAnimationFrame(() => self.update());
+	}
+
+	public change_log(): void {
+		this.log = this.log ? false : true;
 	}
 }
