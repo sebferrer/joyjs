@@ -7,3 +7,7 @@ body {
 .no-pointer-events {
     pointer-events: none;
 }
+
+#log-checker {
+    margin: 1em;
+}

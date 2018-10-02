@@ -19,7 +19,7 @@ export class Joystick {
 	public touch_identifier: number;
 	public div_log: HTMLDivElement;
 
-	constructor(id: string, zonePos: Point, zoneRadius: number, controllerPos: Point, controllerRadius: number, touch_identifier: number) {
+	constructor(id: string, zonePos: Point, zoneRadius: number, controllerPos: Point, controllerRadius: number, touch_identifier?: number) {
 		this.id = id;
 		this.zone = new JoystickCircle(zonePos, zoneRadius, "rgba(18, 65, 145, 0.5)");
 		this.controller = new JoystickCircle(controllerPos, controllerRadius, "rgba(18, 65, 145, 0.8)");
