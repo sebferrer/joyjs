@@ -18,8 +18,8 @@ export class EventManager {
 		this.event_type = event_type;
 		this.log = true;
 
-		document.onmousedown = event => this.mouse_down(event.offsetX, event.offsetY);
-		document.onmouseup = event => this.mouse_up();
+		document.onmousedown = event => this.mouse_down(event);
+		document.onmouseup = event => this.mouse_up(event);
 		document.onmousemove = event => { this.mouse_pos.x = event.offsetX; this.mouse_pos.y = event.offsetY; };
 
 		document.ontouchstart = event => this.touch_start(event.touches);
@@ -85,21 +85,31 @@ export class EventManager {
 		}
 	}
 
-	public mouse_down(x: number, y: number): void {
-		this.joysticks.push(new Joystick(	"mouse", new Point(x, y), 40,
-											new Point(x, y), 20));
+	public mouse_down(event): void {
+		if(event.which === 1) {
+			if(this.joysticks.length === 0) {
+				const x = event.offsetX;
+				const y = event.offsetY;
+				this.joysticks.push(new Joystick(	"mouse", new Point(x, y), 40,
+													new Point(x, y), 20));
+			}
+		}
 	}
 
-	public mouse_up(): void {
-		if (this.joysticks != null) {
-			this.joysticks[0].div_zone.remove();
-			this.joysticks[0].div_controller.remove();
-			if(this.log) {
-				this.joysticks[0].div_log.remove();
+	public mouse_up(event): void {
+		if(event.which === 1) {
+			if (this.joysticks != null) {
+				this.joysticks.forEach(joystick => {
+					joystick.div_zone.remove();
+					joystick.div_controller.remove();
+					if(this.log) {
+						joystick.div_log.remove();
+					}
+				});
+				this.joysticks.splice(0, this.joysticks.length);
+			} else {
+				this.joysticks = new Array<Joystick>();
 			}
-			this.joysticks.splice(0, this.joysticks.length);
-		} else {
-			this.joysticks = new Array<Joystick>();
 		}
 	}
 
